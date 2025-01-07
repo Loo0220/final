@@ -57,26 +57,45 @@ FoodstuffDB.updateOne([{"country":"spain","title":"西班牙藏紅花","text":"�
 
 // 處理 GET /home 路由的請求
 // 同時查詢三個資料集合並回傳結果
-server.get("/home", (req, res) => {
-    // 使用 Promise.all 同時執行多個資料庫查詢
-    // 查詢所有餐點、食材和文化資料
-    Promise.all([
-        DishesListDB.find({}),    // 查詢所有餐點
-        FoodstuffDB.find({}),     // 查詢所有食材
-        CultureListDB.find({})    // 查詢所有文化相關資料
-    ])
-        .then(([dishes, food, culture]) => {
-            // 查詢成功後將結果組合成物件回傳
-            // 使用 || [] 確保即使查詢結果為 null 也會回傳空陣列
+// 獲取所有餐點資料
+server.get("/dishes", (req, res) => {
+    DishesListDB.find({})
+        .then(dishes => {
             res.send({
-                dishes: dishes || [],    // 餐點列表
-                food: food || [],        // 食材列表
-                culture: culture || []   // 文化資料列表
+                dishes: dishes || []
             });
         })
         .catch(err => {
-            // 發生錯誤時回傳 500 狀態碼
-            res.status(500).send("Error!");
+            console.error("Error fetching dishes:", err);
+            res.status(500).send("Error fetching dishes!");
+        });
+});
+
+// 獲取所有食材資料
+server.get("/foodstuff", (req, res) => {
+    FoodstuffDB.find({})
+        .then(food => {
+            res.send({
+                food: food || []
+            });
+        })
+        .catch(err => {
+            console.error("Error fetching foodstuff:", err);
+            res.status(500).send("Error fetching foodstuff!");
+        });
+});
+
+// 獲取所有文化資料
+server.get("/culture", (req, res) => {
+    CultureListDB.find({})
+        .then(culture => {
+            res.send({
+                culture: culture || []
+            });
+        })
+        .catch(err => {
+            console.error("Error fetching culture data:", err);
+            res.status(500).send("Error fetching culture data!");
         });
 });
 
@@ -131,7 +150,7 @@ server.post("/contact_me", (req, res) => {
 })
 
 // 啟動伺服器，監聽 80 埠
-server.listen(80, () => {
+server.listen(3000, () => {
     // 伺服器成功啟動後顯示訊息
     console.log("Server is running at port 80.");
 })
