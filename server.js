@@ -5,9 +5,10 @@
 //npm install nedb-promises
 
 // 引入必要的模組
-var express = require("express");           // 引入 Express 框架
-var server = express();                     // 建立 Express 應用程式實例
-var bodyParser = require("body-parser");    // 引入請求體解析器
+const express = require("express");         // 引入 Express 框架
+const server = express();                   // 建立 Express 應用程式實例
+const bodyParser = require("body-parser");  // 引入請求體解析器
+const path = require("path") 
 
 // 設定靜態檔案目錄
 // __dirname 代表目前程式執行的目錄路徑
@@ -132,14 +133,6 @@ server.get('/api/recipes/:id', async (req, res) => {
     }
 });
 
-// 處理食譜詳細頁面的路由
-server.get('/recipe/:id', (req, res) => {
-    console.log('Serving recipe page for ID:', req.params.id);
-    res.sendFile(__dirname + '/public/recipe.html');
-});
-
-
-
 // 處理 POST /contact_me 路由的請求
 // 用於處理連絡表單的提交
 server.post("/contact_me", (req, res) => {
@@ -154,3 +147,9 @@ server.listen(3000, () => {
     // 伺服器成功啟動後顯示訊息
     console.log("Server is running at port 80.");
 })
+
+// 處理食譜詳細頁面的路由
+server.get('/recipe/:id', (req, res) => {
+    console.log('Serving recipe page for ID:', req.params.id);
+    res.sendFile(path.join(__dirname + '/public/recipe.html'));
+});
